@@ -64,20 +64,20 @@ const userSchema = new mongoose.Schema(
 
 // We are using hook here 
 // During saving the data this hook will run
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function (next){
     if(!this.isModified("password")) return next();
 
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
 })
 
 // Custom method to check password
-userSchema.methods.isPasswordCorrect = async (password) => {
+userSchema.methods.isPasswordCorrect = async function(password){
     return await bcrypt.compare(password, this.password);
 };
 
 
-userSchema.methods.generateRefreshToken = async () => {
+userSchema.methods.generateRefreshToken = async function(){
     return await Jwt.sign(
         {
             _id: this.id,
@@ -92,7 +92,7 @@ userSchema.methods.generateRefreshToken = async () => {
 };
 
 // Generating Token
-userSchema.methods.generateAccessToken = async () => {
+userSchema.methods.generateAccessToken = async function(){
     return await Jwt.sign(
         {
             _id: this.id,
